@@ -1,3 +1,6 @@
+const env = require('dotenv');
+env.config();
+
 var builder = require('botbuilder');
 var restify = require('restify');
 var githubClient = require('./5-github-client.js');
@@ -5,16 +8,28 @@ var githubClient = require('./5-github-client.js');
 var connector = new builder.ChatConnector();
 var bot = new builder.UniversalBot(connector);
 
+const recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL);
+console.warn(process.env.LUIS_MODEL_URL);
+recognizer.onEnabled((context, callback) => {
+    if(context.dialogStack().length > 0) {
+        // we are in conversation
+        callback(null, false);
+    } else {
+        callback(null, true);
+    }
+});
+bot.recognizer(recognizer);
+
 var dialog = new builder.IntentDialog();
-dialog.matches(/^search/i, [
+dialog.matches('SearchProfile', [
     function (session, args, next) {
-        if (session.message.text.toLowerCase() == 'search') {
+        const query = builder.EntityRecognizer.findEntity(args.intent.entities, 'query');
+        if (!query) {
             // TODO: Prompt user for text
             builder.Prompts.text(session, `Who did you want to search for?`);
         } else {
             // else the user typed in: search <<name>>
-            var query = session.message.text.substring(7);
-            next({ response: query });
+            next({ response: query.entity });
         }
     },
     function (session, results, next) {
@@ -46,7 +61,10 @@ dialog.matches(/^search/i, [
         // When you're using choice, the value is inside of results.response.entity
         session.endConversation(`You choose ${results.response.entity}`);
     }
-]);
+])
+.triggerAction({
+    matches: /^search/i
+});
 
 bot.dialog('/', dialog);
 
