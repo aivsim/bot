@@ -9,4 +9,14 @@ Tutorials:
 
 
 MVA sample code: https://github.com/MicrosoftLearning/bots-mva/tree/master/Demos
-MVC: https://mva.microsoft.com/en-US/training-courses/creating-bots-in-the-microsoft-bot-framework-using-nodejs-16759?l=nAysYWEKE_2011787171
+MVA: https://mva.microsoft.com/en-US/training-courses/creating-bots-in-the-microsoft-bot-framework-using-nodejs-16759?l=nAysYWEKE_2011787171
+
+Other cognitive speech services:
+* LUIS.ai
+* Bing search API
+* Face API
+* Emotion API
+* Many more mircorosft.com/cognitive-services
+
+To geister your bot:
+dev.botframework.com
